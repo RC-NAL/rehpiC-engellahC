@@ -1,0 +1,317 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Challenge Cipher</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0b0b0b;
+            color: #e0e0e0;
+            font-family: Consolas, monospace;
+            padding: 30px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #00ff99;
+            letter-spacing: 3px;
+        }
+
+        .box {
+            background: #151515;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .cipher {
+            word-break: break-word;
+            color: #00ff99;
+            line-height: 1.8;
+        }
+
+        .small {
+            font-size: 11px;
+            color: #777;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            background: #080808;
+            color: #00ff99;
+            border: 1px solid #333;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: Consolas, monospace;
+            resize: vertical;
+        }
+
+        #codeBox {
+            height: 350px;
+            color: #aaa;
+            font-size: 13px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            background: #080808;
+            color: white;
+            border: 1px solid #444;
+            border-radius: 6px;
+            font-family: Consolas, monospace;
+            margin-top: 10px;
+        }
+
+        button {
+            background: #00ff99;
+            color: black;
+            border: none;
+            padding: 12px 18px;
+            margin-top: 12px;
+            border-radius: 6px;
+            font-family: Consolas, monospace;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background: #00cc77;
+            }
+
+        #result {
+            display: none;
+            text-align: center;
+            margin-top: 25px;
+            padding: 20px;
+            border: 1px solid #00ff99;
+            border-radius: 10px;
+        }
+
+        #quote {
+            color: #00ff99;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        #answer {
+            color: #aaa;
+            word-break: break-word;
+        }
+
+        .error {
+            color: #ff5555;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>CHALLENGE CIPHER</h1>
+
+        <div class="box">
+            <div class="small">ASCII CIPHER</div>
+
+            <div class="cipher">
+                104 116 116 112 115 58 47 47 114 99 45 110 97 108 46
+                103 105 116 104 117 98 46 105 111 47 67 104 97 108 108
+                101 110 103 101 45 67 105 112 104 101 114 47
+            </div>
+        </div>
+
+        <div class="box">
+
+            <div class="small">
+                Do what you must with this given code.
+            </div>
+
+            <textarea id="codeBox" readonly>
+Imports System.Text
+
+Module Program
+
+    Sub Main()
+
+        Dim input As String
+        Dim codes() As String
+        Dim result As New StringBuilder
+
+        Console.WriteLine("ASCII Code To Characters!")
+        Console.WriteLine()
+
+        Do
+
+            Console.Write("Enter ASCII Cipher: ")
+            input = Console.ReadLine()
+
+            codes = input.Split({" "c, ","c}, StringSplitOptions.RemoveEmptyEntries)
+            result.Clear()
+
+            If codes.Length = 0 Then
+                Console.WriteLine("Invalid input. Try again.")
+                Console.WriteLine()
+                Continue Do
+            End If
+
+            Dim valid As Boolean = True
+
+            For Each code As String In codes
+
+                Dim number As Integer
+
+                If Integer.TryParse(code, number) AndAlso number >= 32 AndAlso number <= 126 Then
+                    result.Append(ChrW(number))
+                Else
+                    valid = False
+                    Exit For
+                End If
+
+            Next
+
+            If valid Then
+                Exit Do
+            Else
+                Console.WriteLine("Invalid ASCII codes. Try again.")
+                Console.WriteLine()
+            End If
+
+        Loop
+
+        Console.WriteLine()
+        Console.WriteLine("Decoded text: " & result.ToString())
+        Console.WriteLine()
+        Console.WriteLine("Character breakdown:")
+        Console.WriteLine("-------------------")
+
+        For Each code As String In codes
+
+            Dim number As Integer = Integer.Parse(code)
+            Dim character As String = ChrW(number)
+
+            If character = " " Then
+                character = "[SPACE]"
+            End If
+
+            Console.WriteLine(character & " = " & number)
+
+        Next
+
+        Console.ReadKey()
+
+    End Sub
+
+End Module
+        </textarea>
+
+            <button onclick="copyCode()">COPY CODE</button>
+
+        </div>
+
+        <div class="box">
+
+            <div class="small">DECODED MESSAGE</div>
+
+            <input type="text"
+                   id="userAnswer"
+                   placeholder="Enter the decoded answer...">
+
+            <button onclick="checkAnswer()">SUBMIT</button>
+
+            <div id="error" class="error"></div>
+
+        </div>
+
+        <div id="result">
+
+            <div id="quote"></div>
+
+            <div class="small">THE ANSWER WAS</div>
+
+            <div id="answer">
+                https://rc-nal.github.io/Challenge-Cipher/
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>const correctAnswer = "https://rc-nal.github.io/Challenge-Cipher/";
+
+    const quotes = [
+        "The real treasure was the friends we made along the way.",
+        "Somehow, this became a group project.",
+        "You have successfully wasted your time.",
+        "Every mystery has an answer. Unfortunately, this was it.",
+        "Congratulations on your dedication to absolutely nothing.",
+        "The journey was long. The destination was questionable.",
+        "You could have been doing literally anything else.",
+        "Knowledge is power. You now have useless knowledge."
+    ];
+
+    function checkAnswer() {
+
+        let input = document.getElementById("userAnswer").value.trim();
+
+        if (input.toLowerCase() === correctAnswer.toLowerCase()) {
+
+            let randomQuote =
+                quotes[Math.floor(Math.random() * quotes.length)];
+
+            document.getElementById("quote").textContent = randomQuote;
+
+            document.getElementById("result").style.display = "block";
+
+            document.getElementById("error").textContent = "";
+
+        } else {
+
+            document.getElementById("error").textContent =
+                "Incorrect. Try again.";
+
+            document.getElementById("result").style.display = "none";
+
+        }
+
+    }
+
+    function copyCode() {
+
+        const code = document.getElementById("codeBox");
+
+        code.select();
+
+        navigator.clipboard.writeText(code.value);
+
+        alert("Code copied!");
+
+    }
+
+    document.getElementById("userAnswer").addEventListener("keydown", function(event) {
+
+        if (event.key === "Enter") {
+            checkAnswer();
+        }
+
+    });</script>
+
+</body>
+</html>
